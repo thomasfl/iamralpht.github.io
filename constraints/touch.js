@@ -103,7 +103,7 @@ function registerGlobalListener() {
 
     function touchEnd(e) {
         if (touchInfo.trackingID == -1) return;
-        e.preventDefault();
+        // e.preventDefault();
         var delta = findDelta(e);
         if (!delta) return;
 
@@ -140,7 +140,18 @@ function registerGlobalListener() {
 
         if (listener && listener.onTouchEnd)
             listener.onTouchEnd(delta.x, delta.y, velocity);
+
+        console.log("touchEnd end");
+        globalDebug1 = e;
+        globalDebug2 = this;
     }
+
+    // document.body.addEventListener('touchstart', touchStart, true);
+    // document.body.addEventListener('touchmove', touchMove, true);
+    // document.body.addEventListener('touchend', touchEnd, true);
+    // document.body.addEventListener('mousedown', touchStart, true);
+    // document.body.addEventListener('mousemove', touchMove, true);
+    // document.body.addEventListener('mouseup', touchEnd, true);
 
     document.body.addEventListener('touchstart', touchStart, false);
     document.body.addEventListener('touchmove', touchMove, false);
@@ -148,6 +159,7 @@ function registerGlobalListener() {
     document.body.addEventListener('mousedown', touchStart, false);
     document.body.addEventListener('mousemove', touchMove, false);
     document.body.addEventListener('mouseup', touchEnd, false);
+
 }
 
 //

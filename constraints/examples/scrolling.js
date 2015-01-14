@@ -1,5 +1,15 @@
 "use strict";
 
+var globalDebug = null;
+var globalDebug1 = null;
+var globalDebug2 = null;
+
+function zoomBox(id) {
+    var box = document.getElementById(id);
+    console.log('zooming event ' + id);
+    globalDebug = box;
+}
+
 function makeScrollingExample(parentElement, bunching) {
     var parentHeight = parentElement.offsetHeight;
     var context = new MotionContext();
@@ -14,7 +24,14 @@ function makeScrollingExample(parentElement, bunching) {
     var firstBox, lastBox;
 
     for (var i = 0; i < N; i++) {
-        var p = new Box('List Item ' + (i+1));
+
+        var div = document.createElement('div');
+        div.className = 'box';
+        div.id = 'box-' + i;
+        div.innerHTML = 'List Item ' + (i+1) + 
+            '<button id="zoom-button-' + i + '" class="zoom-button">zoom-button-' + i + '</button>';
+
+        var p = new Box(div);
 
         // Use cassowary to layout the items in a column. Names are for debugging only.
         p.y = new c.Variable({ name: 'list-item-' + i + '-y' });
@@ -24,12 +41,13 @@ function makeScrollingExample(parentElement, bunching) {
         p.x = 5;
         p.right = 295;
 
+        var cardHeight = 150; // 40;
         // Make the items 40px tall.
-        solver.add(eq(p.bottom, c.plus(p.y, 40), medium));
+        solver.add(eq(p.bottom, c.plus(p.y, cardHeight), medium));
 
         // Gap of 10 between items.
         if (i > 0) // p.y = scrollPosition + i * 50
-            solver.add(eq(p.y, c.plus(scrollPosition, i*50), weak, 100));
+            solver.add(eq(p.y, c.plus(scrollPosition, i*(cardHeight+10)), weak, 100));
         else // p.y = scrollPosition
             solver.add(eq(p.y, scrollPosition, weak, 100));
 
@@ -78,7 +96,13 @@ function makeScrollingExample(parentElement, bunching) {
 
     // Drags in "y" on the parentElement will adjust the variable scrollPosition.
     context.addManipulator(new Manipulator(scrollPosition, parentElement, 'y'));
+
+    // Add event handlers for card operations.
+    for (var i = 0; i < N; i++) {
+        var button = document.getElementById('zoom-button-' + i);
+        button.addEventListener("click", zoomBox('box-' + i), false);
+    }
 }
 
-makeScrollingExample(document.getElementById('scrolling-example'));
+// makeScrollingExample(document.getElementById('scrolling-example'));
 makeScrollingExample(document.getElementById('android-notifications'), true);

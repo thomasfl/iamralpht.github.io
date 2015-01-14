@@ -1,0 +1,93 @@
+<html>
+<head>
+<title>Stack of cards prototype</title>
+<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+<link href="article.css" rel="stylesheet"></link>
+<script src="touch.js"></script>
+<script src="../physics/animate.js"></script>
+<script src="../physics/friction.js"></script>
+<script src="../physics/spring.js"></script>
+<script src="../physics/gravity.js"></script>
+<script src="c.js"></script>
+<script src="manipulator.js"></script>
+<script src="multieditsolver.js"></script>
+<script src="motioncontext.js"></script>
+<script src="motionconstraint.js"></script>
+<script src="box.js"></script>
+
+<style>
+.box {
+    position: absolute;
+    top: 0; left: 0;
+    text-align: left;
+    background-color: white;
+    color: black;
+    border-radius: 8px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.25);
+    padding: 5px;
+    font-size: 18px;
+    font-family: sans-serif;
+    pointer-events: none;
+    will-change: transform;
+    box-sizing: border-box;
+    -webkit-transform-origin: 0 0;
+    transform-origin: 0 0;
+}
+
+.zoom-button {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: #A9A9A9;
+    border: none;    
+}
+.mono {
+    font-family: monospace;
+}
+div.mono {
+    margin: 8px;
+}
+.constraints { font-size: 18px; }
+</style>
+
+<!-- examples style -->
+
+<link href="examples/scrolling.css" rel="stylesheet"></link>
+
+</head>
+<body>
+<div class="content">
+<div class="title">Towards declarative touch interactions</div>
+
+<h3>Vertical scrolling lists</h3>
+</div>
+<div class="example">
+<br>
+
+<div class="scrolling-example" id="android-notifications"></div><br>
+</div>
+<div class="constraints">
+<b>Linear constraints</b><br>
+The list items are 40 pixels tall:
+<div class="mono">panel[i].bottom = panel[i].y + 40</div>
+The list items are stacked vertically in a column, with a 10-pixel gap:
+<div class="mono">panel[i].y = panel[i-1].bottom + 10</div>
+<b>Motion constraints</b><br>
+The first list item can't have a vertical position more than 0 pixels from the origin:
+<div class="mono">panel[first].y &lt;= 0 spring</div>
+The last list item's bottom position can't be higher than the parent height:
+<div class="mono">panel[last].bottom &gt;= parentHeight spring</div>
+<b>Variation (list on right)</b><br>
+In the list variation on the right, we just prevent the boxes from leaving the parent by imposing extra linear constraints:
+<div class="mono">panel[i] &gt;= panel[i-1].y + 3</div>
+<div class="mono">panel[i] &lt;= panel[i+1].y - 3</div>
+<div class="mono">panel[first].y &gt;= 0</div>
+<div class="mono">panel[last].bottom &lt;= parentHeight</div>
+Now our panels stack with a padding of 3 pixels, and the first and last panels don't leave the parent. <a href="https://github.com/iamralpht/iamralpht.github.io/blob/master/constraints/examples/scrolling.js">Check out the source code for this example on GitHub.</a>
+</div>
+<!-- examples code -->
+    <script src="examples/prelude.js"></script>
+
+    <script src="examples/scrolling.js"></script>
+</body>
+</html>
